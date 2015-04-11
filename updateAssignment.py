@@ -40,6 +40,11 @@ def stitchNotebook(old, new):
 		print "Error trying to merge IPython notebooks: notebook structure has been modified. Please proceed manually to merge starter code from '%s' into '%s'." % (new, old)
 		return
 
+	# make backup
+	dirname = op.dirname(old)
+	fileparts = op.splitext(op.basename(old))
+	shutil.copy(old, dirname + "/" + fileparts[0] + "_backup" + fileparts[1])
+
 	with open(old, 'w') as f:
 		for i in xrange(len(newblocks)):
 			studentblock, block = newblocks[i]
