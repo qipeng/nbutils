@@ -48,8 +48,9 @@ class Notebook:
         return True
 
 class Autograder:
-    def __init__(self, filename = None):
+    def __init__(self, filename = None, allowNegativePoints = False):
         self.parse(filename)
+        self.graders = dict()
 
     def parse(self, filename = None):
         self.notebook = Notebook(filename)
@@ -118,6 +119,44 @@ class Autograder:
                                 pass
 
             self.studentOutputs += [outputsbuffer]
+
+    def set_grader(self, block_id, grader_fun = None):
+        if block_id >= len(self.studentOutputs):
+            print "Block ID '%d' exceeds the total number of outputs %d" % (block_id, len(studentOutputs)-1)
+            return
+
+        if grader_fun:
+            self.graders[block_id] = grader_fun
+        else:
+            del self.graders[block_id]
+
+    def grade(self):
+        n_outputs = len(self.studentOutputs)
+        self.scores = dict()
+        self.reasons = dict()
+        for i in xrange(n_outputs):
+        	if i in grader_fun:
+            	score, reasons = self.grader_fun(self.studentOutputs[i])
+
+            	if score < 0 and not self.allowNegativePoints:
+            		warn("Score went negative to '%f' for block %d, resetting to zero" % (score, i))
+            		score = 0
+
+            	self.scores[i] = score
+            	self.reasons[i] = reasons
+
+    def generateReport(self, f):
+    	for k in self.scores:
+    		f.write("\nBlock %d: %f\n" % (k, scores[k]))
+    		for item in self.reasons[k]:
+    			f.write("\t%f\t%s\n" % (item[0], item[1]))
+
+    def printCSV(self, f):
+    	# avoid writing anything other than the scores (including line breaks) 
+    	# to allow for maximum degrees of freedom in formatting outside of this
+    	# function
+    	for k in self.scores:
+    		f.write("%f, " % self.scores[k])
 
 if __name__ == "__main__":
     ag = Autograder('wordvec_sentiment.ipynb')
