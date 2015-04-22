@@ -139,7 +139,7 @@ class Autograder:
         self.scores = dict()
         self.reasons = dict()
         for i in xrange(n_outputs):
-            if i in grader_fun:
+            if i in self.graders:
                 score, reasons = self.grader_fun(self.studentOutputs[i])
 
                 if score < 0 and not self.allowNegativePoints:
