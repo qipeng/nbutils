@@ -53,6 +53,10 @@ class Autograder:
         self.graders = dict()
 
     def parse(self, filename = None):
+        if not filename:
+            # allow empty initialization
+            return
+
         self.notebook = Notebook(filename)
 
         self.studentBlocks = []
