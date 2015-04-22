@@ -125,7 +125,7 @@ class Autograder:
             self.studentOutputs += [outputsbuffer]
 
     def set_grader(self, block_id, grader_fun = None):
-        if block_id >= len(self.studentOutputs):
+        if hasattr(self, "studentOutputs") and block_id >= len(self.studentOutputs):
             print "Block ID '%d' exceeds the total number of outputs %d" % (block_id, len(studentOutputs)-1)
             return
 
@@ -140,10 +140,10 @@ class Autograder:
         self.reasons = dict()
         for i in xrange(n_outputs):
             if i in self.graders:
-                score, reasons = self.grader_fun(self.studentOutputs[i])
+                score, reasons = self.graders[i](self.studentOutputs[i])
 
                 if score < 0 and not self.allowNegativePoints:
-                    warn("Score went negative to '%f' for block %d, resetting to zero" % (score, i))
+                    warn("Score went negative to '%g' for block %d, resetting to zero" % (score, i))
                     score = 0
 
                 self.scores[i] = score
@@ -151,16 +151,16 @@ class Autograder:
 
     def generateReport(self, f):
         for k in self.scores:
-            f.write("\nBlock %d: %f\n" % (k, scores[k]))
+            f.write("Block %d: %g\n" % (k, self.scores[k]))
             for item in self.reasons[k]:
-                f.write("\t%f\t%s\n" % (item[0], item[1]))
+                f.write("\t%g\t%s\n" % (item[0], item[1]))
 
     def printCSV(self, f):
         # avoid writing anything other than the scores (including line breaks) 
         # to allow for maximum degrees of freedom in formatting outside of this
         # function
         for k in self.scores:
-            f.write("%f, " % self.scores[k])
+            f.write("%g, " % self.scores[k])
 
 if __name__ == "__main__":
     ag = Autograder('wordvec_sentiment.ipynb')
