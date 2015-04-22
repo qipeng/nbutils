@@ -135,28 +135,28 @@ class Autograder:
         self.scores = dict()
         self.reasons = dict()
         for i in xrange(n_outputs):
-        	if i in grader_fun:
-            	score, reasons = self.grader_fun(self.studentOutputs[i])
+            if i in grader_fun:
+                score, reasons = self.grader_fun(self.studentOutputs[i])
 
-            	if score < 0 and not self.allowNegativePoints:
-            		warn("Score went negative to '%f' for block %d, resetting to zero" % (score, i))
-            		score = 0
+                if score < 0 and not self.allowNegativePoints:
+                    warn("Score went negative to '%f' for block %d, resetting to zero" % (score, i))
+                    score = 0
 
-            	self.scores[i] = score
-            	self.reasons[i] = reasons
+                self.scores[i] = score
+                self.reasons[i] = reasons
 
     def generateReport(self, f):
-    	for k in self.scores:
-    		f.write("\nBlock %d: %f\n" % (k, scores[k]))
-    		for item in self.reasons[k]:
-    			f.write("\t%f\t%s\n" % (item[0], item[1]))
+        for k in self.scores:
+            f.write("\nBlock %d: %f\n" % (k, scores[k]))
+            for item in self.reasons[k]:
+                f.write("\t%f\t%s\n" % (item[0], item[1]))
 
     def printCSV(self, f):
-    	# avoid writing anything other than the scores (including line breaks) 
-    	# to allow for maximum degrees of freedom in formatting outside of this
-    	# function
-    	for k in self.scores:
-    		f.write("%f, " % self.scores[k])
+        # avoid writing anything other than the scores (including line breaks) 
+        # to allow for maximum degrees of freedom in formatting outside of this
+        # function
+        for k in self.scores:
+            f.write("%f, " % self.scores[k])
 
 if __name__ == "__main__":
     ag = Autograder('wordvec_sentiment.ipynb')
