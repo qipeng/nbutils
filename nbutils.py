@@ -89,7 +89,6 @@ class Autograder:
             inAutograderOutput = False
             outputsbuffer = []
             for output in self.notebook.cellOutputs[cId]:
-                outputsbuffer = []
                 if "name" in output and output["name"] == "stdout":
                     linebuffer = []
                     for line in output["text"]:
@@ -104,6 +103,8 @@ class Autograder:
                             # try parsing the current buffer
                             try:
                                 bufferstr = bufferstr.replace("array", "")
+                                bufferstr = bufferstr.replace(", dtype=int64", "")
+                                bufferstr = bufferstr.replace(", dtype=int32", "")
 
                                 if bufferstr.startswith("("):
                                     parsed = literal_eval(bufferstr)
