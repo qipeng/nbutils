@@ -3,6 +3,7 @@ import os.path as op
 import numpy as np
 from ast import literal_eval
 import re
+import warnings
 
 STUDENT_CODE_BEGIN = "### YOUR CODE HERE"
 STUDENT_CODE_END = "### END YOUR CODE"
@@ -51,6 +52,7 @@ class Autograder:
     def __init__(self, filename = None, allowNegativePoints = False):
         self.parse(filename)
         self.graders = dict()
+        self.allowNegativePoints = allowNegativePoints
 
     def parse(self, filename = None):
         if not filename:
@@ -143,14 +145,14 @@ class Autograder:
                 score, reasons = self.graders[i](self.studentOutputs[i])
 
                 if score < 0 and not self.allowNegativePoints:
-                    warn("Score went negative to '%g' for block %d, resetting to zero" % (score, i))
+                    warnings.warn("Score went negative to '%g' for block %d, resetting to zero" % (score, i))
                     score = 0
 
                 self.scores[i] = score
                 self.reasons[i] = reasons
 
     def generateReport(self, f):
-        for k in self.scores:
+        for k in sorted(self.scores.keys()):
             f.write("Block %d: %g\n" % (k, self.scores[k]))
             for item in self.reasons[k]:
                 f.write("\t%g\t%s\n" % (item[0], item[1]))
